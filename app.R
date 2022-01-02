@@ -16,17 +16,9 @@ library(ggpubr)
 library(tidyverse) 
 library(dplyr)
 library(shinycssloaders)
-# BiocManager::install("Maaslin2")
 options(repos = BiocManager::repositories(version = "3.12"))
 library(BiocManager)
 library(Maaslin2)
-
-
-if(1){
-  # try(setwd("~/GMAP/shiny/general/"), silent = T)
-  # try(setwd("/Volumes/ehudda/GMAP/shiny/general/"), silent = T)
-  try(setwd("/vol/sci/bio/data/moran.yassour/lab/Projects/EasyMap/"), silent = T)
-}
 
 
 ui <- dashboardPage(header = dashboardHeader(title = "EasyMap"                                             ), 
