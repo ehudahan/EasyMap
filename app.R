@@ -1,3 +1,5 @@
+# hi
+# hi again
 ##################################
 #####         EasyMap         ####
 #####                         ####
@@ -6,6 +8,7 @@
 ##### Contact me at:          #### 
 ##### ehud.dahan@mail.huji.ac.il #
 ##################################
+
 
 library(shiny)
 library(shinydashboard)
