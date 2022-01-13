@@ -1,14 +1,11 @@
-# hi
-# hi again
 ##################################
 #####         EasyMap         ####
 #####                         ####
 ##### Created by: Ehud Dahan  ####
-##### From Yassour Lab        ####
+##### From Yassour Lab HUJI   ####
 ##### Contact me at:          #### 
 ##### ehud.dahan@mail.huji.ac.il #
 ##################################
-
 
 library(shiny)
 library(shinydashboard)
@@ -19,17 +16,9 @@ library(ggpubr)
 library(tidyverse) 
 library(dplyr)
 library(shinycssloaders)
-# BiocManager::install("Maaslin2")
 options(repos = BiocManager::repositories(version = "3.12"))
 library(BiocManager)
 library(Maaslin2)
-
-
-if(1){
-  try(setwd("~/GMAP/shiny/general/"), silent = T)
-  try(setwd("/Volumes/ehudda/GMAP/shiny/general/"), silent = T)
-  try(setwd("/vol/sci/bio/data/moran.yassour/lab/Projects/GMAP/shiny/general/"), silent = T)
-}
 
 
 ui <- dashboardPage(header = dashboardHeader(title = "EasyMap"                                             ), 
@@ -51,17 +40,17 @@ ui <- dashboardPage(header = dashboardHeader(title = "EasyMap"                  
                                 h2("Upload Tab"),
                                 h4("Please choose data file. For brief view of the tool options one can use the example. just click below"),
                                 fluidPage(fluidRow(
-                                                 column(9, fileInput("file1", "Upload data here:",
-                                                           multiple = FALSE,
-                                                           accept = c(".tsv",
-                                                                      ".csv"
-                                                           )),
-                                                        align = "left"),
-                                                 column(2, tags$br(), 
-                                                        uiOutput('example_file_ui'), align = "right")
-                                   )),
-                                      uiOutput('edit_file_ui'),
-                                      uiOutput("table_view")
+                                  column(9, fileInput("file1", "Upload data here:",
+                                                      multiple = FALSE,
+                                                      accept = c(".tsv",
+                                                                 ".csv"
+                                                      )),
+                                         align = "left"),
+                                  column(2, tags$br(), 
+                                         uiOutput('example_file_ui'), align = "right")
+                                )),
+                                uiOutput('edit_file_ui'),
+                                uiOutput("table_view")
                         ),
                         tabItem(tabName = "run", 
                                 h2("Run Analysis"),
@@ -85,7 +74,7 @@ ui <- dashboardPage(header = dashboardHeader(title = "EasyMap"                  
                     skin = "purple")
 
 server <- function(input, output, session) { 
-  EXAMPLE_FILE <- "example_Files/GMAP_example_file.tsv"
+  EXAMPLE_FILE <- "Data/GMAP_example_file.tsv"
   COL_PREVIEW <- 7  # number of column in file preview
   MAX_CATEGORICAL_VALUES <- 10
   MIN_NUMERICAL_VALUES <- 3
@@ -114,6 +103,7 @@ server <- function(input, output, session) {
                                    transform = "AST",
                                    plot_heatmap = F,
                                    plot_scatter = F,
+                                   min_abundance = 0.0001,
                                    random_effects = input_random_effects,
                                    fixed_effects = input_fixed_effects,
                                    reference = input_reference
@@ -122,7 +112,7 @@ server <- function(input, output, session) {
   }
   draw_heatmap <- function(data, qval_thr){
     ggplot(data, aes(y = feature, x = metadata, fill = qval)) +
-      geom_tile() +
+      geom_tile() +  # CHECK WHAT HAPPEND WHEN THERE IS TWO VALUS IN SAME SQURE
       facet_grid(~set,drop = T,
                  scales = "free",space = "free",
                  labeller = label_wrap_gen(width = 10, multi_line = TRUE)) +
@@ -163,7 +153,7 @@ server <- function(input, output, session) {
       stat_table <- filter_maaslin_output[,c("value", "reference", "qval", "coef")]
       names(stat_table) <- c("group1","group2","qval", "coef")
       stat_table$y.position <- max(data[[feature]]) + 0.1
-      stat_table$Qvalue <- paste0("Q=", round(stat_table$qval, 5), " C=", round(stat_table$coef, 5))
+      stat_table$Qvalue <- paste0("q=", formatC(stat_table$qval, format = "e", digits = 2), " c=", formatC(stat_table$coef, format = "e", digits = 2))
       
     } else{
       # take care of cases when x is continous
@@ -182,7 +172,7 @@ server <- function(input, output, session) {
   #                             fixed_vars = NULL, 
   #                             continous_vars = NULL, 
   #                             transformation = "AST"){
-
+  
   draw_click_plot_continous <- function(    data, 
                                             effect, 
                                             feature, 
@@ -196,10 +186,10 @@ server <- function(input, output, session) {
                                             transformation = "AST"){
     
     g <- ggplot(data = data, aes_string(x = effect, y = feature)) +
-        geom_smooth(method = "glm", se = F) +
-        geom_point(alpha = 0.8, size = 2)
-
-
+      geom_smooth(method = "glm", se = F) +
+      geom_point(alpha = 0.8, size = 2)
+    
+    
     if (color != "NA"){
       g2 <- g + 
         aes_string(color = color, fill = color) +
@@ -214,18 +204,18 @@ server <- function(input, output, session) {
         geom_text(aes_string(label = label), position = position_jitterdodge(jitter.width = 0.3, seed = 1))
     }
     
-      if (transformation == "AST") {
-        g3 <- g2 +
-          labs(title = as.character(set),
-               y = paste0(feature, " (AST)")) +
-          theme_classic()
-      } else {
-        g3 <- g2 +
-          labs("title",
-               y = paste0(feature, "")) +
-          theme_classic()
-      }
-
+    if (transformation == "AST") {
+      g3 <- g2 +
+        labs(title = as.character(set),
+             y = paste0(feature, " (AST)")) +
+        theme_classic()
+    } else {
+      g3 <- g2 +
+        labs("title",
+             y = paste0(feature, "")) +
+        theme_classic()
+    }
+    
     
     if (facet != "NA" | is.null(stat_table)){
       g4 <- g3 + 
@@ -237,12 +227,12 @@ server <- function(input, output, session) {
         labs(subtitle = "Q-Values calculated by MaAsLin2",
              caption = stat_table$Qvalue)
     }
-
+    
     return(g4)
   }
   
-      
-
+  
+  
   draw_click_plot <- function(data, 
                               effect, 
                               feature, 
@@ -257,24 +247,24 @@ server <- function(input, output, session) {
     
     if (effect %in% continous_vars){
       return(draw_click_plot_continous(data, 
-                                              effect, 
-                                              feature, 
-                                              set, 
-                                              facet, 
-                                              color, 
-                                              label, 
-                                              stat_table, 
-                                              fixed_vars, 
-                                              continous_vars, 
-                                              transformation = "AST"))}
+                                       effect, 
+                                       feature, 
+                                       set, 
+                                       facet, 
+                                       color, 
+                                       label, 
+                                       stat_table, 
+                                       fixed_vars, 
+                                       continous_vars, 
+                                       transformation = "AST"))}
     
     
-
+    
     if (color == "NA"){
       g2 <- ggplot(data = data) + 
         aes_string(x = effect, y = feature, color = effect) +
         geom_boxplot(alpha = 0.8, outlier.size = 0, outlier.alpha = 0) +
-      
+        
         # aes_string(color = as.character(effect), fill = as.character(effect)) +
         geom_point(alpha = 0.8, size = 2, position = position_jitterdodge(jitter.width = 0.3, seed = 1))
     } else {
@@ -285,9 +275,9 @@ server <- function(input, output, session) {
         geom_point(alpha = 0.8, size = 4, position = position_jitterdodge(jitter.width = 0.3, seed = 1))
     }
     if(label != "NA"){
-        g2 <- g2 + 
-          geom_text(aes_string(label = label), size = 2, position = position_jitterdodge(jitter.width = 0.3, seed = 1))
-        }
+      g2 <- g2 + 
+        geom_text(aes_string(label = label), size = 2, position = position_jitterdodge(jitter.width = 0.3, seed = 1))
+    }
     # if (label %in% names(data)){g2 <- g2 + geom_text(aes_string(label = label), position = position_jitterdodge(jitter.width = 0.8, seed = 1))}
     
     # if (facet != "NA"){g2 <- g2 + }
@@ -383,19 +373,19 @@ server <- function(input, output, session) {
     output$run_filters <- renderUI({
       return(list(
         tagList(
-        h5("In each category below choose all relevant variables in your data. note that only relevant columns will appear in the list, but still your responsibilty is to chooce an apropriate column to enable analysis work"),
-        tags$h5("Sample ID:"), 
-        tags$b(paste(input$sampleID, collapse = ", ")),
-        tags$hr(),
-        tags$b("Random effects:"), 
-        tags$b(paste(input$random, collapse = ", ")),
-        tags$hr(),
-        tags$h5("Categorial potencialy fixed effects:"), 
-        tags$b(paste(input$fixed, collapse = ", ")),
-        tags$hr(),
-        tags$h5("Continous potencialy fixed effects:"), 
-        tags$b(paste(input$fixed_numeric, collapse = ", ")),
-        tags$hr()),
+          h5("In each category below choose all relevant variables in your data. note that only relevant columns will appear in the list, but still your responsibilty is to chooce an apropriate column to enable analysis work"),
+          tags$h5("Sample ID:"), 
+          tags$b(paste(input$sampleID, collapse = ", ")),
+          tags$hr(),
+          tags$b("Random effects:"), 
+          tags$b(paste(input$random, collapse = ", ")),
+          tags$hr(),
+          tags$h5("Categorial potencialy fixed effects:"), 
+          tags$b(paste(input$fixed, collapse = ", ")),
+          tags$hr(),
+          tags$h5("Continous potencialy fixed effects:"), 
+          tags$b(paste(input$fixed_numeric, collapse = ", ")),
+          tags$hr()),
         uiOutput('remain_variables_preview')
       ))
     })
@@ -608,7 +598,7 @@ server <- function(input, output, session) {
     if (input$example_file){
       def_selected$sampleID <- c(1)
       def_selected$random <- c(1)
-      def_selected$fixed <- c(1:5)
+      def_selected$fixed <- c(1:4)
       def_selected$fixed_numeric <- c(2)
     }
     
@@ -674,14 +664,14 @@ server <- function(input, output, session) {
     }
     
     
-      react_values_list$define_columns_approved <- T
-      return(list(
-        h4("Remain variables:"),
-        h5(paste(setdiff(names(reactive_contents()), unique(all_input_choices)), collapse = ", ")),
-        actionButton(inputId = 'define_columns_approved', label = " Approved", icon = icon("check"), width = "100%",
-                     style="color: #fff; background-color: #337ab7; border-color: #2e6da4")
-      )
-      )
+    react_values_list$define_columns_approved <- T
+    return(list(
+      h4("Remain variables:"),
+      h5(paste(setdiff(names(reactive_contents()), unique(all_input_choices)), collapse = ", ")),
+      actionButton(inputId = 'define_columns_approved', label = " Approved", icon = icon("check"), width = "100%",
+                   style="color: #fff; background-color: #337ab7; border-color: #2e6da4")
+    )
+    )
     
   })
   
@@ -741,15 +731,15 @@ server <- function(input, output, session) {
   output$plot_filters <- renderUI({
     req(input$run)
     return(list(
-      pickerInput(inputId = "plot_color",
-                  label = "Color by",
+      pickerInput(inputId = "plot_facet",
+                  label = "Facet by",
                   choices = c(NA, input$fixed),
                   selected = NA,
                   options = list(`actions-box` = TRUE),
                   multiple = F
       ),
-      pickerInput(inputId = "plot_facet",
-                  label = "Facet by",
+      pickerInput(inputId = "plot_color",
+                  label = "Color by",
                   choices = c(NA, input$fixed),
                   selected = NA,
                   options = list(`actions-box` = TRUE),
@@ -857,8 +847,8 @@ server <- function(input, output, session) {
       for (i in 1:length(input$fixed)) {
         if (input[[paste0("set_",num_set,"_","var_", i,"_include")]] == T){
           
-        # }
-        # if(input[[paste0("set_",num_set,"_","var_", i)]] != EXCLUDE_TEXT){
+          # }
+          # if(input[[paste0("set_",num_set,"_","var_", i)]] != EXCLUDE_TEXT){
           # determine which variables were included in this set
           input_fixed_effects_in_curr_set <- c(input_fixed_effects_in_curr_set, input$fixed[i])
           
@@ -871,8 +861,8 @@ server <- function(input, output, session) {
       for (i in 1:length(input$fixed_numeric)) {
         if (input[[paste0("set_",num_set,"_","num_var_", i,"_include")]] == T){
           
-        # }
-        # if(input[[paste0("set_",num_set,"_","con_var_", i)]] != EXCLUDE_TEXT){
+          # }
+          # if(input[[paste0("set_",num_set,"_","con_var_", i)]] != EXCLUDE_TEXT){
           # determine which variables were included in this set
           input_fixed_effects_in_curr_set <- c(input_fixed_effects_in_curr_set, input$fixed_numeric[i])
           
@@ -953,7 +943,7 @@ server <- function(input, output, session) {
     reactive_maaslin_output() %>%
       filter(set %in% input$vars_set_filter) %>%
       filter(feature %in% input$features_filter) # %>% 
-      # filter(qval < input$qval_thr)
+    # filter(qval < input$qval_thr)
   })
   reactive_heatmap <-  reactive({
     draw_heatmap(reactive_data(), input$qval_thr)
@@ -1129,10 +1119,10 @@ server <- function(input, output, session) {
       included_fixed <- sapply(seq_along(input$fixed), function(i){T})
       references_fixed <- sapply(seq_along(input$fixed), function(i){input$fixed[i]})
       included_fixed_numeric <- sapply(seq_along(input$fixed), function(i){T})
-# 
-#       included_fixed <- c(input$fixed)
-#       references_fixed <- rep_along(included_fixed, T)
-#       included_fixed_numeric <- c(input$fixed_numeric)
+      # 
+      #       included_fixed <- c(input$fixed)
+      #       references_fixed <- rep_along(included_fixed, T)
+      #       included_fixed_numeric <- c(input$fixed_numeric)
     } else{
       included_fixed <- sapply(seq_along(input$fixed), function(i){
         ifelse(input[[paste0("set_",num_set - 1,"_","var_", i,"_include")]]==T, T, F)
@@ -1160,16 +1150,16 @@ server <- function(input, output, session) {
     fixed_button <- lapply(seq_along(input$fixed), function(i){
       return(list(
         h5(input$fixed[i]),
-      checkboxInput(inputId = paste0("set_",num_set,"_","var_", i,"_include"),
-                    label = "Include", value = ifelse(included_fixed[i]==T, T, F), width = "20%"),
-      pickerInput(inputId = paste0("set_",num_set,"_","var_", i), 
-                  label = "reference",
-                  # choices = c(EXCLUDE_TEXT, unique(as.character(reactive_contents()[[input$fixed[i]]]))),
-                  choices = unique(as.character(reactive_contents()[[input$fixed[i]]])),
-                  selected = references_fixed[i],
-                  options = list(`actions-box` = TRUE),
-                  multiple = F,
-                  width = 'fit')
+        checkboxInput(inputId = paste0("set_",num_set,"_","var_", i,"_include"),
+                      label = "Include", value = ifelse(included_fixed[i]==T, T, F), width = "20%"),
+        pickerInput(inputId = paste0("set_",num_set,"_","var_", i), 
+                    label = "reference",
+                    # choices = c(EXCLUDE_TEXT, unique(as.character(reactive_contents()[[input$fixed[i]]]))),
+                    choices = unique(as.character(reactive_contents()[[input$fixed[i]]])),
+                    selected = references_fixed[i],
+                    options = list(`actions-box` = TRUE),
+                    multiple = F,
+                    width = 'fit')
       ))})
     
     fixed_numeric_button <- lapply(seq_along(input$fixed_numeric), function(i){
@@ -1181,8 +1171,8 @@ server <- function(input, output, session) {
       #             selected = INCLUDE_TEXT,
       #             options = list(`actions-box` = TRUE),
       #             multiple = F)
-      })
-
+    })
+    
     return(box(list(
       model_name,
       # included_variables_checkbox,
@@ -1209,18 +1199,18 @@ server <- function(input, output, session) {
       showCloseButton = FALSE,
       width = NULL
     )
-      output$go_to_heatmap_ui <-renderUI({
-        req(reactive_maaslin_output())
-        box(downloadButton(outputId = "download_maaslin_output",label = "Download log file", width = "30%"), 
-            # sweet_alert,
-            actionButton(inputId = 'go_heatmap_tab',label = HTML("<b>Go next</b>"),width = "70%",
-                         # icon("paper-plane"), 
-                         style="color: #fff; background-color: #337ab7; border-color: #2e6da4"),
-            width = "100%")
-      })
-      reactive_maaslin_output() 
-      react_values_list$analysis_finish <- T
-      # output$botton_download_maaslin_output <- renderUI(downloadButton(outputId = "download_maaslin_output",label = "Download log file"))
+    output$go_to_heatmap_ui <-renderUI({
+      req(reactive_maaslin_output())
+      box(downloadButton(outputId = "download_maaslin_output",label = "Download log file", width = "30%"), 
+          # sweet_alert,
+          actionButton(inputId = 'go_heatmap_tab',label = HTML("<b>Go next</b>"),width = "70%",
+                       # icon("paper-plane"), 
+                       style="color: #fff; background-color: #337ab7; border-color: #2e6da4"),
+          width = "100%")
+    })
+    reactive_maaslin_output() 
+    react_values_list$analysis_finish <- T
+    # output$botton_download_maaslin_output <- renderUI(downloadButton(outputId = "download_maaslin_output",label = "Download log file"))
     
   })
   output$heatmap <- renderPlot({
