@@ -9,7 +9,7 @@ EasyMap, an interactive online tool allowing for \
 EasyMap provides the user a side-by-side visualization of association results across the various models, each with additional metadata variables, enabling the user to evaluate the impact of each metadata variable on the associated feature. EasyMap’s interface enables filtering associations by significance, focusing on specific microbes and finding the robust associations that are found across multiple models. EasyMap takes the common task of multivariate linear regression to the next level, with an intuitive and simple user interface, allowing for wide comparisons of multiple models to identify the robust microbial feature associations.
 
 
-## Step 1: Input Data Upload
+## Step 1: Input data upload
 The first step is uploading the user input data, which is a separator based file (csv, tsv etc.) including all relevant data: clinical metadata variables and taxonomic features’ abundance for each sample. This file should follow [MaAsLin](https://huttenhower.sph.harvard.edu/maaslin) format (largely described below) and should have a header line. Suppose there are n metadata variables and m taxonomic features, the input file will have three sections of columns:\
 (a) The first column will contain the sample ID, which is a unique identifier of samples; \
 (b) The next n columns will contain the metadata variables, where each of the variables can be either all strings or all numeric but not mixture. These can include clinical measurements and also other information, such as subject ID, or collecting clinic; \
@@ -29,7 +29,7 @@ After defining and approving the variables (as described in step 2) the user wil
 
 Additional models can be added by clicking on the “add new set” button, and repeating this selection step for each model. By default, the new model is initiated with the selection of variables of the most recently defined model. While many models can be added and compared across, it impacts the total running time and the ease of results viewing in the next step, thus comparing 3-5 models seems ideal.
 
-## Output Description
+## Output description
 The output of the EasyMap is composed of two sections: A heatmap of all significant results and a detailed view of selected associations (for example using box plots), with the ability to facet and color the raw data. All the results that are shown on the screen (heatmap with the detailed plots) can be exported to a pdf file.
 
 ## Step 4: A birds-eye view of all significant results
