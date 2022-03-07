@@ -19,13 +19,13 @@ EasyMap is an interactive web tool for evaluating and comparing associations of 
 * [How to Run](#how-to-run)
     * [Step 1: Input data upload](#step-1-input-data-upload)
     * [Step 2: Variables type definition](#step-2-variables-type-definition)
-    * [Step 3 - Model construction](#step-3-model-construction)
+    * [Step 3: Model construction](#step-3-model-construction)
     * [Output description](#output-description)
     * [Step 4: A birds-eye view of all significant results](#step-4-a-birds-eye-view-of-all-significant-results)
     * [Step 5a: Detailed view of selected associations](#step-5a-detailed-view-of-selected-associations)
     * [Step 5b: Alternating views of the raw data of selected associations](#step-5b-alternating-views-of-the-raw-data-of-selected-associations)
-* [Run an example](#visualization)
-* [Troubleshooting](#troubleshooting)
+* [Run an example](#run-an-example)
+* [Non-microbiome related](#non-microbiome-related)
 
 # Tutorial
 
@@ -47,7 +47,7 @@ After uploading the data, it is necessary to define the type of all clinical met
 
 Categorical variables are automatically sorted alphabetically (for example, always, never, sometimes), however, if the user has a specific relevant order, the variable values can include a prefix to maintain this order (like, a_never, b_sometimes, c_always). Numeric variables that have four or less unique values will be treated as categorical variables. Once all variables are defined an “approve” button will appear at the bottom of the screen. 
 
-## Step 3 - Model construction ##
+## Step 3: Model construction ##
 When searching for statistical-significant associations, we first need to choose the clinical variables that our model should account for. These variables are usually chosen based on prior understanding of the clinical situation, and also including factors that are known to impact the microbial community composition. Naively, one can include all collected variables in the model, however, including too many variables would lead to overfitting the data, and diluting the signal across too many variables, potentially missing the significant association altogether. Oftentimes, we choose multiple models, each containing a different set of examined variables, with the aim to compare the results across these models. EasyMap was built to enable a comprehensive comparison across various models, thus highlighting the strong, consistent associations across multiple models. 
 
 After defining and approving the variables (as described in step 2) the user will next move to selecting the variables to be used in the first model. In the case of categorical variables, the user can also specify the reference value to be used for each variable. For example, if delivery_mode has two possible values: “C-section” or “vaginal”, the user can specify that “vaginal” will be the reference value. By default, the tool sorts the values alphabetically and the first value is used as reference. In the example above this would have been “C-section”.
@@ -65,6 +65,11 @@ One unique and useful feature of EasyMap is the ability to toggle quickly betwee
 
 ## Step 5b: Alternating views of the raw data of selected associations ##
 Finally, to include additional metadata to the existing plot, the user can facet the box plot and/or color the dots, by a specific variable. When the plot is faceted, the MaAsLin2 q-values are removed from the plot, and instead a t-test is performed, and p-values are presented. Finally, the user can color the dots based on the categorical variables of the model, and add labels to the dots, based on the random variables of the model. 
+
+## Run an example ##
+#### Clicking on the ‘example’ button in the ‘Upload Files’ tab loads a case study data as example.
+In this case study, we considered six clinical variables that were collected in our cohort, and are also known to have an impact on gut microbiome composition: mode of delivery (vaginal or C-section), age (at time of visit), ethnicity, use of probiotics in the first year of life, infant diet at each time point (breastfed, formula-fed, mixed); and finally the allergy status (case/control). In this study we are searching for microbial features that are associated with the allergy status, taking into account all other clinical variables.
+#### Add more steps to case study? because after loading the example - everything is the same for any data.
 
 #### check this title
 ## Non-microbiome related ##
