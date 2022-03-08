@@ -7,12 +7,12 @@ EasyMap is an interactive web tool for evaluating and comparing associations of 
 (3) comparing across the various models to identify the critical metadata variables and select the optimal model.
 
 
-#### If you use the EasyMap software, please cite our manuscript:
+#### When you use EasyMap, cite our manuscript:
 #### Ehud Dahan,Victoria M. Martin, Moran Yassour (2022). [EasyMap - An interactive web tool for evaluating and comparing associations of clinical variables and microbiome composition](???). Frontiers, ???
 
-#### If you have questions, please don't hasistate to conctact us:
-#### [Ehud Dahan](ehud.dahan@mail.huji.ac.il)
-#### [Moran Yassour](???)
+#### Email us if you have any question:
+#### [Ehud Dahan](mailto:ehud.dahan@mail.huji.ac.il)
+#### [Moran Yassour](moranya@mail.huji.ac.il)
 
 ## Contents ##
 * [Description](#description)
@@ -33,7 +33,7 @@ EasyMap is an interactive web tool for evaluating and comparing associations of 
 
 EasyMap provides the user a side-by-side visualization of association results across the various models, each with additional metadata variables, enabling the user to evaluate the impact of each metadata variable on the associated feature. EasyMap’s interface enables filtering associations by significance, focusing on specific microbes and finding the robust associations that are found across multiple models. EasyMap takes the common task of multivariate linear regression to the next level, with an intuitive and simple user interface, allowing for wide comparisons of multiple models to identify the robust microbial feature associations.
 
-## How to run ##
+## How to run EasyMap##
 ## Step 1: Input data upload ##
 The first step is uploading the user input data, which is a separator based file (csv, tsv etc.) including all relevant data: clinical metadata variables and taxonomic features’ abundance for each sample. This file should follow [MaAsLin](https://huttenhower.sph.harvard.edu/maaslin) format (largely described below) and should have a header line. Suppose there are n metadata variables and m taxonomic features, the input file will have three sections of columns:\
 (a) The first column will contain the sample ID, which is a unique identifier of samples; \
@@ -69,9 +69,8 @@ Finally, to include additional metadata to the existing plot, the user can facet
 ## Run an example ##
 #### Clicking on the ‘example’ button in the ‘Upload Files’ tab loads a case study data as example.
 In this case study, we considered six clinical variables that were collected in our cohort, and are also known to have an impact on gut microbiome composition: mode of delivery (vaginal or C-section), age (at time of visit), ethnicity, use of probiotics in the first year of life, infant diet at each time point (breastfed, formula-fed, mixed); and finally the allergy status (case/control). In this study we are searching for microbial features that are associated with the allergy status, taking into account all other clinical variables.
-#### Add more steps to case study? because after loading the example - everything is the same for any data.
+#### Add more steps to case study? because after loading the example - everything is the same for any data. - refer readers to the paper
 
-#### check this title
-## Non-microbiome related ##
+## Running EasyMap on other, non-microbiome related, data ##
 We developed EasyMap to assist us in analyzing data from our lab’s studies. It was built as a wrapper for MaAsLin2, with added visualization and comparison abilities, tailored for microbiome studies. However, it can be used in many additional contexts where multivariate linear models are commonly used, maintaining all its added value. EasyMap is also extremely useful for sharing results with collaborators, and enabling all participants to dig deeper in the analysis of their data.
 
