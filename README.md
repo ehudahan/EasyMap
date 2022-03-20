@@ -68,7 +68,7 @@ Finally, to include additional metadata to the existing plot, the user can facet
 
 ## Run an example ##
 ###### Clicking on the ‘example’ button in the ‘Upload Files’ tab loads a case study data as example.
-In this case study, we considered six clinical variables that were collected in our cohort, and are also known to have an impact on gut microbiome composition: mode of delivery (vaginal or C-section), age (at time of visit), ethnicity, use of probiotics in the first year of life, infant diet at each time point (breastfed, formula-fed, mixed); and finally the allergy status (case/control). In this study we are searching for microbial features that are associated with the allergy status, taking into account all other clinical variables.
+In this case study, we considered six clinical variables that were collected in our cohort, and are also known to have an impact on gut microbiome composition: mode of delivery (vaginal or C-section), age (at time of visit), ethnicity, use of probiotics in the first year of life, infant diet at each time point (breastfed, formula-fed, mixed); and finally the disease status (case/control). In this study we are searching for microbial features that are associated with the disease status, taking into account all other clinical variables.
 #### For more detailes about case study please check our [paper](???).
 
 ## Running EasyMap on other, non-microbiome related, data ##
