@@ -17,7 +17,7 @@ library(ggpubr)
 library(tidyverse) 
 library(dplyr)
 library(shinycssloaders)
-options(repos = BiocManager::repositories(version = BiocManager::version()))  
+options(repos = BiocManager::repositories(version = "3.14))  
 library(BiocManager)
 library(Maaslin2)
 
