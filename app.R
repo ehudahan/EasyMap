@@ -85,9 +85,11 @@ ui <- dashboardPage(useShinyjs(),
                                          please check our ", 
                                          tags$a("paper", href="https://github.com/yassourlab/EasyMap/blob/main/README.md"), 
                                          ".",tags$br(),
-                                         "After clicking the example button, 
-                                         press the submit button ", tags$b("above")," to continue with the
-                                         loaded example data to step 2."), 
+                                         "Clicking the 'Load example data' will load the example data 
+                                         to the app which will then enable you to continue to
+                                         analyse the example data by clicking the 'Submit' button", 
+                                         tags$b("above"), ". You also can review the exact format by 
+                                         downloading the example data file itself by clicking the 'Download example data' button."),
                                 uiOutput('example_file_ui')
                         ),
                         tabItem(tabName = "run", 
@@ -209,7 +211,7 @@ server <- function(input, output, session) {
   FromMaaslinInputToMaaslinOutput <- function(input_data = NULL,input_metadata = NULL,input_fixed_effects = NULL,input_random_effects = NULL,input_reference = NULL, trans = "AST"){
     fit_data <- Maaslin2::Maaslin2(input_data = input_data,
                                    input_metadata = input_metadata,
-                                   output = "www",
+                                   output = "tmp",
                                    transform = trans,
                                    plot_heatmap = F,
                                    plot_scatter = F,
@@ -295,8 +297,7 @@ server <- function(input, output, session) {
     if(label != "NA"){
       g2 <- g2 + 
         geom_text(aes_string(label = label), 
-                  position = position_jitterdodge(jitter.width = 0.3, seed = 1),
-                  color = "black")
+                  position = position_jitterdodge(jitter.width = 0.3, seed = 1))
     }
     
     if (transformation == "AST") {
@@ -369,10 +370,11 @@ server <- function(input, output, session) {
     }
     if(label != "NA"){
       g2 <- g2 + 
-        geom_text(aes_string(label = label), size = 2, color = "black",
+        geom_text(aes_string(label = label), size = 2, 
+                  #color = "black",
                   position = position_jitterdodge(jitter.width = 0.3, seed = 1))
     }
-
+    
     if (transformation == "AST") {
       g3 <- g2 +
         labs(title = as.character(set),
@@ -422,7 +424,7 @@ server <- function(input, output, session) {
     effect <- all_measured_ordered[round(num_x)] %>% as.character()
     
     # filter features data by user filters
-    plot_data <- features_data %>% select(c(feature, input$sampleID, input$random, input$fixed, input$fixed_numeric))
+    plot_data <- features_data %>% select(all_of(c(feature, input$sampleID, input$random, input$fixed, input$fixed_numeric)))
     
     # convert bacteria columns to AST
     if (ast==TRUE){
@@ -487,13 +489,14 @@ server <- function(input, output, session) {
           h6("When searching for statistical-significant associations, we first need to choose the clinical variables that our model should account for. These variables are usually chosen based on prior understanding of the clinical situation, and also including factors that are known to impact the microbial community composition. Naively, one can include all collected variables in the model, however, including too many variables would lead to overfitting the data, and diluting the signal across too many variables, potentially missing the significant association altogether. Oftentimes, we choose multiple models, each containing a different set of examined variables, with the aim to compare the results across these models."),
           h6(" EasyMap was built to enable a comprehensive comparison across various models, thus highlighting the strong, consistent associations across multiple models."),
           h6("Here, you will select the variables to be used in the first model. In the case of categorical variables, you can also specify the reference value to be used for each variable.
-          Additional models can be added by clicking on the “add new set” button, and repeating this selection step for each model. By default, the new model is initiated with the selection of variables of the most recently defined model. While many models can be added and compared across, it impacts the total running time and the ease of results viewing in the next step, thus comparing 3-5 models seems ideal."),
+          Additional models can be added by clicking on the 'Add new set' button, and repeating this selection step for each model. By default, the new model is initiated with the selection of variables of the most recently defined model. While many models can be added and compared across, it impacts the total running time and the ease of results viewing in the next step, thus comparing 3-5 models seems ideal."),
           
         ),
         tags$hr(),
         uiOutput("references_1"),
         tags$hr(),
-        actionButton(inputId = 'add_new_variables_set',label = "Add new variables set",width = "100%"),
+        tags$b("Click the 'Add new set' button to add new model."),
+        actionButton(inputId = 'add_new_variables_set',label = "Add new set",width = "100%", icon = icon("plus")),
         uiOutput('run_button_ui'),
         withSpinner(uiOutput("go_to_heatmap_ui"))
       ))
@@ -510,14 +513,23 @@ server <- function(input, output, session) {
                          inline = TRUE,
                          choiceNames = AST_APPLIED_TEXT,
                          choiceValues = "AST"),
+      tags$b("Click 'Run analysis' after you finish to define all models of interest."),
       actionButton(inputId = 'run',label = HTML("<b>Run analysis</b>"),width = "100%",
                    style="color: #fff; background-color: #337ab7; border-color: #2e6da4")
     ))
   })
   
   file_is_approved <- reactiveValues(approved = F)
+  output$download_example <- downloadHandler(contentType = "text/csv", filename = "EasyMap_Example.tsv", content = function(file){file.copy("Data/GMAP_redundant_data_for_EasyMap_example.tsv", file)})
+  
   output$example_file_ui <- renderUI({
-    actionButton(inputId = 'example_file',label = "Example", width = "100%")
+    return(list(
+      actionButton(inputId = 'example_file',label = "Load example data", width = "70%", icon = icon("upload")),
+      downloadButton(outputId = "download_example",label = "Download example data", width = "30%"
+                     # style="color: #fff; background-color: #337ab7; border-color: #2e6da4"
+      )
+    ))
+    
   })
   output$file_checks <- renderUI({
     file_is_approved$approved <- F
@@ -902,7 +914,7 @@ server <- function(input, output, session) {
       )
       
     }
-
+    
     if (!is.null(input$file2)){
       # when reading semicolon separated files,
       # having a comma separator causes `read.csv` to error
@@ -925,7 +937,7 @@ server <- function(input, output, session) {
       )
       
     }
-
+    
     
     return(df)
   })
@@ -1099,7 +1111,6 @@ server <- function(input, output, session) {
     
     # stat_table <- NULL
     if(input$plot_facet == "NA"){
-      # browser()
       stat_table <- stat_table_from_maaslin_output(data = plot_data_list$plot_data,
                                                    maaslin_output = reactive_maaslin_output(),
                                                    references = reactive_references_list_by_chosen_set(),
@@ -1332,8 +1343,18 @@ server <- function(input, output, session) {
     output$click_plot <- renderPlot(isolate(reactive_update_plot()))
     features_values <- reactive_plot_data_list()$plot_data[[1]]
   })
+  
+  EMPTY_GG <- ggplot() +
+    theme_void() +
+    geom_text(aes(0,0,label='Please click on the heatmap to draw here a plot.')) +
+    xlab(NULL)
+  
+  output$click_plot <- renderPlot(EMPTY_GG)  
+  
   observeEvent(input$update_plot, {
+    # req(input$click_on_heatmap)
     output$click_plot <- renderPlot(isolate(reactive_update_plot()))
+    
     exports_plots[["heatmap_export_1"]] <- isolate(reactive_heatmap())
     exports_plots[["plot_export_1"]] <- isolate(reactive_update_plot())
   })
