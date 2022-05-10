@@ -1,11 +1,12 @@
 # EasyMap user manual #
 EasyMap is an interactive web tool for evaluating and comparing associations of clinical variables and microbiome composition.
 
-[EasyMap](https://ehudahan.shinyapps.io/easymap), an interactive online tool allowing for \
+[EasyMap](https://yassour.rcs.huji.ac.il/EasyMap/), an interactive online tool allowing for \
 (1) running multiple multivariate linear regression models, on the same features and metadata; \
 (2) visualizing the associations between microbial features and clinical metadata found in each model; \
 (3) comparing across the various models to identify the critical metadata variables and select the optimal model.
 
+EasyMap is availible for free here: [https://yassour.rcs.huji.ac.il/EasyMap/](https://yassour.rcs.huji.ac.il/EasyMap/).
 
 When you use EasyMap, cite our manuscript:
 Ehud Dahan,Victoria M. Martin, Moran Yassour (2022). [EasyMap - An interactive web tool for evaluating and comparing associations of clinical variables and microbiome composition](???). Frontiers, ???
