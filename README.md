@@ -9,7 +9,7 @@ EasyMap is an interactive web tool for evaluating and comparing associations of 
 EasyMap is availible for free here: [https://yassour.rcs.huji.ac.il/EasyMap/](https://yassour.rcs.huji.ac.il/EasyMap/).
 
 When you use EasyMap, cite our manuscript:
-Ehud Dahan,Victoria M. Martin, Moran Yassour (2022). [EasyMap - An interactive web tool for evaluating and comparing associations of clinical variables and microbiome composition](???). Frontiers, ???
+Ehud Dahan,Victoria M. Martin, Moran Yassour (2022). [EasyMap - An interactive web tool for evaluating and comparing associations of clinical variables and microbiome composition](https://www.frontiersin.org/article/10.3389/fcimb.2022.854164). Frontiers in Cellular and Infection Microbiology, 12, 2022.
 
 Email us if you have any question:
 [Ehud Dahan](mailto:ehud.dahan@mail.huji.ac.il)
